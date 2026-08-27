@@ -1,0 +1,516 @@
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
+
+export default function LoginScreen() {
+  const [phone, setPhone] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleLogin = () => {
+    console.log("Login request", {
+      phone,
+      password,
+    });
+  };
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Welcome back</Text>
+
+      <Text style={styles.subtitle}>
+        Send money quickly and securely.
+      </Text>
+
+      <TextInput
+        style={styles.input}
+        placeholder="Phone number"
+        value={phone}
+        onChangeText={setPhone}
+        keyboardType="phone-pad"
+      />
+
+      <TextInput
+        style={styles.input}
+        placeholder="Password"
+        value={password}
+        onChangeText={setPassword}
+        secureTextEntry
+      />
+
+      <TouchableOpacity
+        style={styles.button}
+        onPress={handleLogin}
+      >
+        <Text style={styles.buttonText}>
+          Sign In
+        </Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 24,
+    justifyContent: "center",
+    backgroundColor: "#FFFFFF",
+  },
+
+  title: {
+    fontSize: 32,
+    fontWeight: "700",
+    marginBottom: 8,
+  },
+
+  subtitle: {
+    color: "#666",
+    marginBottom: 30,
+  },
+
+  input: {
+    height: 52,
+    borderWidth: 1,
+    borderColor: "#DDD",
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    marginBottom: 14,
+  },
+
+  button: {
+    height: 52,
+    backgroundColor: "#176B4D",
+    borderRadius: 12,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  buttonText: {
+    color: "#FFF",
+    fontSize: 16,
+    fontWeight: "700",
+  },
+});
+
+Later, handleLogin() will call your authentication API.
+
+11. Build the Sender Home Screen
+
+Create:
+
+apps/mobile/features/sender/SenderHomeScreen.tsx
+import React from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+} from "react-native";
+
+export default function SenderHomeScreen() {
+  return (
+    <ScrollView style={styles.container}>
+      <Text style={styles.greeting}>
+        Good evening
+      </Text>
+
+      <Text style={styles.title}>
+        Send money
+      </Text>
+
+      <View style={styles.balanceCard}>
+        <Text style={styles.balanceLabel}>
+          Available balance
+        </Text>
+
+        <Text style={styles.balance}>
+          GMD 25,000.00
+        </Text>
+      </View>
+
+      <Text style={styles.sectionTitle}>
+        Quick actions
+      </Text>
+
+      <View style={styles.actions}>
+        <TouchableOpacity style={styles.action}>
+          <Text>Send Money</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.action}>
+          <Text>Transactions</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.action}>
+          <Text>Rates</Text>
+        </TouchableOpacity>
+      </View>
+    </ScrollView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: "#F7F9F8",
+  },
+
+  greeting: {
+    color: "#777",
+    marginTop: 20,
+  },
+
+  title: {
+    fontSize: 30,
+    fontWeight: "700",
+    marginTop: 5,
+  },
+
+  balanceCard: {
+    backgroundColor: "#176B4D",
+    padding: 24,
+    borderRadius: 18,
+    marginTop: 24,
+  },
+
+  balanceLabel: {
+    color: "#D9F4E8",
+  },
+
+  balance: {
+    color: "#FFF",
+    fontSize: 28,
+    fontWeight: "700",
+    marginTop: 8,
+  },
+
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: "700",
+    marginTop: 30,
+    marginBottom: 15,
+  },
+
+  actions: {
+    gap: 12,
+  },
+
+  action: {
+    backgroundColor: "#FFF",
+    padding: 20,
+    borderRadius: 14,
+  },
+});
+12. Build the Live Exchange Rate Screen
+
+This is one of the most important screens because the platform's value proposition is the P2P rate marketplace.
+
+Create:
+
+apps/mobile/features/exchange/OffersScreen.tsx
+import React from "react";
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
+
+import { mockOffers } from "../../constants/mockOffers";
+import { ExchangeOffer } from "../../types";
+
+export default function OffersScreen() {
+  const renderOffer = ({ item }: { item: ExchangeOffer }) => {
+    return (
+      <View style={styles.card}>
+        <View style={styles.header}>
+          <Text style={styles.agent}>
+            {item.agentName}
+          </Text>
+
+          <View style={styles.activeBadge}>
+            <Text style={styles.activeText}>
+              Live
+            </Text>
+          </View>
+        </View>
+
+        <Text style={styles.pair}>
+          {item.fromCurrency} → {item.toCurrency}
+        </Text>
+
+        <Text style={styles.rate}>
+          {item.exchangeRate.toFixed(2)}
+        </Text>
+
+        <Text style={styles.available}>
+          Available:{" "}
+          {item.availableAmount.toLocaleString()}
+        </Text>
+
+        <Text style={styles.limit}>
+          Limits: {item.minAmount.toLocaleString()} -
+          {" "}
+          {item.maxAmount.toLocaleString()}
+        </Text>
+
+        <TouchableOpacity style={styles.button}>
+          <Text style={styles.buttonText}>
+            Select Rate
+          </Text>
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>
+        Live exchange offers
+      </Text>
+
+      <FlatList
+        data={mockOffers}
+        keyExtractor={(item) => item.id}
+        renderItem={renderOffer}
+        contentContainerStyle={{
+          paddingBottom: 30,
+        }}
+      />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: "#F7F9F8",
+  },
+
+  title: {
+    fontSize: 26,
+    fontWeight: "700",
+    marginBottom: 20,
+  },
+
+  card: {
+    backgroundColor: "#FFF",
+    borderRadius: 16,
+    padding: 18,
+    marginBottom: 14,
+  },
+
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+
+  agent: {
+    fontSize: 16,
+    fontWeight: "700",
+  },
+
+  activeBadge: {
+    backgroundColor: "#E4F8EC",
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 20,
+  },
+
+  activeText: {
+    color: "#17864F",
+    fontSize: 12,
+    fontWeight: "700",
+  },
+
+  pair: {
+    marginTop: 18,
+    color: "#777",
+  },
+
+  rate: {
+    fontSize: 32,
+    fontWeight: "800",
+    marginTop: 5,
+  },
+
+  available: {
+    marginTop: 10,
+  },
+
+  limit: {
+    color: "#777",
+    marginTop: 5,
+  },
+
+  button: {
+    backgroundColor: "#176B4D",
+    padding: 15,
+    borderRadius: 10,
+    alignItems: "center",
+    marginTop: 16,
+  },
+
+  buttonText: {
+    color: "#FFF",
+    fontWeight: "700",
+  },
+});
+13. Build the Send Money Form
+
+Create:
+
+apps/mobile/features/orders/CreateOrderScreen.tsx
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
+
+export default function CreateOrderScreen() {
+  const [amount, setAmount] = useState("");
+  const [recipient, setRecipient] = useState("");
+
+  const rate = 16.45;
+
+  const receiveAmount =
+    Number(amount || 0) * rate;
+
+  const submitOrder = () => {
+    const order = {
+      recipient,
+      amount: Number(amount),
+      rate,
+      receiveAmount,
+    };
+
+    console.log("Creating order:", order);
+  };
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>
+        Send money
+      </Text>
+
+      <Text style={styles.label}>
+        Amount to send
+      </Text>
+
+      <TextInput
+        style={styles.input}
+        placeholder="0.00"
+        keyboardType="decimal-pad"
+        value={amount}
+        onChangeText={setAmount}
+      />
+
+      <Text style={styles.currency}>
+        GMD
+      </Text>
+
+      <Text style={styles.label}>
+        Recipient
+      </Text>
+
+      <TextInput
+        style={styles.input}
+        placeholder="Recipient phone/account"
+        value={recipient}
+        onChangeText={setRecipient}
+      />
+
+      <View style={styles.summary}>
+        <Text>Exchange rate</Text>
+        <Text>{rate}</Text>
+
+        <Text>Recipient receives</Text>
+        <Text style={styles.receive}>
+          NGN {receiveAmount.toLocaleString()}
+        </Text>
+      </View>
+
+      <TouchableOpacity
+        style={styles.button}
+        onPress={submitOrder}
+      >
+        <Text style={styles.buttonText}>
+          Continue
+        </Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: "#FFF",
+  },
+
+  title: {
+    fontSize: 28,
+    fontWeight: "700",
+    marginBottom: 30,
+  },
+
+  label: {
+    fontWeight: "600",
+    marginBottom: 8,
+    marginTop: 15,
+  },
+
+  input: {
+    borderWidth: 1,
+    borderColor: "#DDD",
+    height: 52,
+    borderRadius: 12,
+    paddingHorizontal: 15,
+  },
+
+  currency: {
+    position: "absolute",
+    right: 35,
+    top: 115,
+    color: "#777",
+  },
+
+  summary: {
+    backgroundColor: "#F5F7F6",
+    padding: 18,
+    borderRadius: 14,
+    marginTop: 25,
+    gap: 10,
+  },
+
+  receive: {
+    fontSize: 22,
+    fontWeight: "700",
+  },
+
+  button: {
+    backgroundColor: "#176B4D",
+    padding: 16,
+    borderRadius: 12,
+    alignItems: "center",
+    marginTop: 25,
+  },
+
+  buttonText: {
+    color: "#FFF",
+    fontWeight: "700",
+  },
+});
