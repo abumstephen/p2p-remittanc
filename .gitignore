@@ -27,9 +27,7 @@ Thumbs.db
 desktop.ini
 
 # Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-!.vscode/settings.json
+.vscode/
 .idea/
 *.swp
 *.swo
@@ -59,9 +57,8 @@ tmp/
 temp/
 *.tmp
 
-# Kiro workspace (optional - you can commit or ignore)
-# Uncomment if you don't want to share Kiro specs with the team
-# .kiro/
+# Kiro workspace - AI development tools
+.kiro/
 
 # Personal notes and drafts
 starter.md
@@ -78,6 +75,3 @@ starter.md
 # package-lock.json
 # yarn.lock
 # pnpm-lock.yaml
-TESTING_GUIDE.md
-.kiro/UI-UX-REFERENCE-GUIDE.md
-.kiro/UK_BID_WRITING_STYLE_GUARDRAIL.md
